@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formular Weiterleitung</title>
+    <title>Discord Webhook Sender</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #3498db, #8e44ad);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             text-align: center;
             display: flex;
@@ -19,32 +19,40 @@
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
             text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
+            width: 320px;
+            backdrop-filter: blur(10px);
         }
 
         input {
-            width: 100%;
-            padding: 10px;
+            width: 90%;
+            padding: 12px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
             font-size: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #ddd;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background: #2ecc71;
+            padding: 12px;
+            background: #27ae60;
             border: none;
             border-radius: 5px;
             font-size: 1rem;
@@ -54,28 +62,51 @@
         }
 
         button:hover {
-            background: #27ae60;
+            background: #219150;
         }
     </style>
     <script>
-        function weiterleiten() {
-            let feld1 = document.getElementById("eingabe1").value;
-            let feld2 = document.getElementById("eingabe2").value;
+        async function senden() {
+            const webhookURL = "https://discord.com/api/webhooks/1345516170501034065/bEmDUb2QHZ1E1JAS399wvfieLDxBscZ4MlBjRL_-vq5Nxr0OGrI09BrJzKc72TVJqYgJ";
+            const feld1 = document.getElementById("feld1").value;
+            const feld2 = document.getElementById("feld2").value;
 
-            if (feld1 && feld2) {
-                window.location.href = "https://discord.com/api/webhooks/1345516170501034065/bEmDUb2QHZ1E1JAS399wvfieLDxBscZ4MlBjRL_-vq5Nxr0OGrI09BrJzKc72TVJqYgJ" + encodeURIComponent(feld1) + "&wert2=" + encodeURIComponent(feld2);
-            } else {
+            if (!feld1 || !feld2) {
                 alert("Bitte beide Felder ausfüllen!");
+                return;
+            }
+
+            const nachricht = `🎉 **Neue Nachricht!** 🎉\n📌 **Eingabe 1:** ${feld1}\n📌 **Eingabe 2:** ${feld2}`;
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ content: nachricht })
+                });
+
+                if (response.ok) {
+                    alert("Nachricht erfolgreich gesendet!");
+                    document.getElementById("feld1").value = "";
+                    document.getElementById("feld2").value = "";
+
+                    // Nach erfolgreichem Senden weiterleiten
+                    window.location.href = "https://www.google.com"; // Ändere die URL nach Wunsch
+                } else {
+                    alert("Fehler beim Senden!");
+                }
+            } catch (error) {
+                console.error("Fehler:", error);
             }
         }
     </script>
 </head>
 <body>
-    <h1>KARL</h1>
+    <h1>Nachricht an Discord senden</h1>
     <div class="container">
-        <input type="text" id="eingabe1" placeholder="Eingabe 1">
-        <input type="text" id="eingabe2" placeholder="Eingabe 2">
-        <button onclick="weiterleiten()">Absenden</button>
+        <input type="text" id="feld1" placeholder="Eingabe 1">
+        <input type="text" id="feld2" placeholder="Eingabe 2">
+        <button onclick="senden()">Senden</button>
     </div>
 </body>
 </html>
